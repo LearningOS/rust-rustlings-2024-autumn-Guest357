@@ -34,9 +34,11 @@
 // Execute `rustlings hint tests7` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM NOT DNE
 
-fn main() {}
+fn main() {
+    println!("cargo:rerun-if-env-changed=TEST_FOO");
+}
 
 #[cfg(test)]
 mod tests {

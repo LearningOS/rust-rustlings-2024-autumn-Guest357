@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+// I AM NOT DNE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -70,14 +70,46 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    where
+    T: PartialOrd + Clone,
+{
+    let mut merged_list = LinkedList::new();
+    let mut node_a = list_a.start;
+    let mut node_b = list_b.start;
+
+    // 逐个比较两个链表的元素，将较小的元素加入合并后的链表
+    while let (Some(mut a_ptr), Some(mut b_ptr)) = (node_a, node_b) {
+        unsafe {
+            let a_val = &(*a_ptr.as_ptr()).val;
+            let b_val = &(*b_ptr.as_ptr()).val;
+
+            if a_val <= b_val {
+                merged_list.add((*a_ptr.as_ptr()).val.clone());
+                node_a = (*a_ptr.as_ptr()).next;
+            } else {
+                merged_list.add((*b_ptr.as_ptr()).val.clone());
+                node_b = (*b_ptr.as_ptr()).next;
+            }
         }
-	}
+    }
+
+    // 添加剩余的节点
+    while let Some(mut a_ptr) = node_a {
+        unsafe {
+            merged_list.add((*a_ptr.as_ptr()).val.clone());
+            node_a = (*a_ptr.as_ptr()).next;
+        }
+    }
+
+    while let Some(mut b_ptr) = node_b {
+        unsafe {
+            merged_list.add((*b_ptr.as_ptr()).val.clone());
+            node_b = (*b_ptr.as_ptr()).next;
+        }
+    }
+
+    merged_list
+}
 }
 
 impl<T> Display for LinkedList<T>

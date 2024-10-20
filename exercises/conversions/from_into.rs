@@ -7,6 +7,8 @@
 // Execute `rustlings hint from_into` or use the `hint` watch subcommand for a
 // hint.
 
+use std::sync::Arc;
+
 #[derive(Debug)]
 struct Person {
     name: String,
@@ -40,10 +42,31 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
+// I AM NOT ONE
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        
+        if s.is_empty(){
+            return Person::default();
+        }
+        let v:Vec<&str>=s.split(',').collect();
+        if v.len() != 2 {
+            return Person::default();
+        }
+        let name = v.get(0).unwrap_or(&"").to_string();
+
+        if name.is_empty(){
+            return Person::default();
+        }
+
+        if let Some(asd) =v.get(1)  {
+            if let  Ok(age)=asd.parse::<usize>() {
+                return Person{name ,age};
+            }
+            
+        }
+        Person::default()
     }
 }
 

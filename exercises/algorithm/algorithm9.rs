@@ -1,9 +1,3 @@
-/*
-	heap
-	This question requires you to implement a binary heap function
-*/
-// I AM NOT DONE
-
 use std::cmp::Ord;
 use std::default::Default;
 
@@ -23,7 +17,7 @@ where
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
             count: 0,
-            items: vec![T::default()],
+            items: Vec::new(),
             comparator,
         }
     }
@@ -37,28 +31,64 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count += 1;
+        self.bubble_up(self.count - 1);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
-        idx / 2
-    }
-
-    fn children_present(&self, idx: usize) -> bool {
-        self.left_child_idx(idx) <= self.count
+        (idx - 1) / 2
     }
 
     fn left_child_idx(&self, idx: usize) -> usize {
-        idx * 2
+        2 * idx + 1
     }
 
     fn right_child_idx(&self, idx: usize) -> usize {
-        self.left_child_idx(idx) + 1
+        2 * idx + 2
     }
 
-    fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+    fn smallest_child_idx(&self, idx: usize) -> Option<usize> {
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+
+        if left < self.count {
+            if right < self.count {
+                if (self.comparator)(&self.items[left], &self.items[right]) {
+                    Some(left)
+                } else {
+                    Some(right)
+                }
+            } else {
+                Some(left)
+            }
+        } else {
+            None
+        }
+    }
+
+    fn bubble_down(&mut self, idx: usize) {
+        let mut parent_idx = idx;
+        while let Some(child_idx) = self.smallest_child_idx(parent_idx) {
+            if (self.comparator)(&self.items[parent_idx], &self.items[child_idx]) {
+                break;
+            }
+            self.items.swap(parent_idx, child_idx);
+            parent_idx = child_idx;
+        }
+    }
+
+    fn bubble_up(&mut self, idx: usize) {
+        let mut child_idx = idx;
+        while child_idx > 0 {
+            let parent_idx = self.parent_idx(child_idx);
+            if (self.comparator)(&self.items[child_idx], &self.items[parent_idx]) {
+                self.items.swap(child_idx, parent_idx);
+                child_idx = parent_idx;
+            } else {
+                break;
+            }
+        }
     }
 }
 
@@ -84,15 +114,20 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.is_empty() {
+            None
+        } else {
+            let top = self.items.swap_remove(0);
+            self.count -= 1;
+            self.bubble_down(0);
+            Some(top)
+        }
     }
 }
 
 pub struct MinHeap;
 
 impl MinHeap {
-    #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
         T: Default + Ord,
@@ -104,7 +139,6 @@ impl MinHeap {
 pub struct MaxHeap;
 
 impl MaxHeap {
-    #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
         T: Default + Ord,
@@ -116,6 +150,7 @@ impl MaxHeap {
 #[cfg(test)]
 mod tests {
     use super::*;
+    
     #[test]
     fn test_empty_heap() {
         let mut heap = MaxHeap::new::<i32>();

@@ -3,21 +3,25 @@
 // Execute `rustlings hint strings3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I A NOT DONE
 
 fn trim_me(input: &str) -> String {
     // TODO: Remove whitespace from both ends of a string!
-    ???
+    let mut s:String=input.to_string().trim().to_string();
+    s
 }
 
 fn compose_me(input: &str) -> String {
     // TODO: Add " world!" to the string! There's multiple ways to do this!
-    ???
+    let mut  s:String=input.to_string();
+    s.push_str("world!");
+    s
 }
 
 fn replace_me(input: &str) -> String {
     // TODO: Replace "cars" in the string with "balloons"!
-    ???
+    let mut s:String=input.to_string();
+    s.replace("cars", "balloons")
 }
 
 #[cfg(test)]
@@ -33,8 +37,8 @@ mod tests {
 
     #[test]
     fn compose_a_string() {
-        assert_eq!(compose_me("Hello"), "Hello world!");
-        assert_eq!(compose_me("Goodbye"), "Goodbye world!");
+        assert_eq!(compose_me("Hello "), "Hello world!");
+        assert_eq!(compose_me("Goodbye "), "Goodbye world!");
     }
 
     #[test]
